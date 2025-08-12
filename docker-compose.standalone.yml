@@ -1,0 +1,23 @@
+# --------------------------------------------------------------------------
+#  Standalone Service
+# --------------------------------------------------------------------------
+#  This file runs the blog as a standalone container, exposing it directly
+#  on port 8080. It is ideal for local development or simple deployments.
+#
+#  To run: docker-compose -f docker-compose.standalone.yml up
+# --------------------------------------------------------------------------
+
+services:
+  blog-standalone:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: everything-markdown-blog
+    ports:
+      - "8080:80" # Maps host port 8080 to container port 80
+    restart: unless-stopped
+    networks:
+      - default
+
+networks:
+  default:
