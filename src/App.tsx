@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound";
 import BlogIndex from "./pages/BlogIndex";
 import BlogPostPage from "./pages/BlogPost";
 import RouteTracer from "./otel/RouteTracer";
+import ScrollToTop from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -17,6 +18,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <RouteTracer />
         <Routes>
           <Route path="/" element={<Index />} />
