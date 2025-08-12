@@ -29,12 +29,13 @@ export type BlogPost = BlogPostSummary & {
 };
 
 function normalizeKeywords(keywords: BlogFrontmatter["keywords"]): string[] {
-  if (Array.isArray(keywords)) return keywords;
-  if (!keywords) return [];
-  return keywords
-    .split(",")
-    .map((k) => k.trim())
-    .filter(Boolean);
+  if (Array.isArray(keywords)) {
+    return keywords.map(k => k.trim()).filter(Boolean);
+  }
+  if (typeof keywords === 'string') {
+    return keywords.split(',').map(k => k.trim()).filter(Boolean);
+  }
+  return [];
 }
 
 function deriveSlug(path: string, fmSlug?: string) {

@@ -32,7 +32,7 @@ export default function Index() {
         title={import.meta.env.VITE_SEO_TITLE}
         description={import.meta.env.VITE_SEO_DESCRIPTION}
         canonical={`${site}/`}
-        keywords={import.meta.env.VITE_SEO_KEYWORDS.split(",")}
+        keywords={(import.meta.env.VITE_SEO_KEYWORDS || "").split(",")}
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "Person",

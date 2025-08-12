@@ -18,7 +18,7 @@ export default function BlogIndex() {
         title={`Blog — ${import.meta.env.VITE_SEO_AUTHOR}`}
         description={import.meta.env.VITE_SEO_DESCRIPTION}
         canonical={`${site}/blog`}
-        keywords={[import.meta.env.VITE_SEO_AUTHOR, "blog", ...categories]}
+        keywords={[import.meta.env.VITE_SEO_AUTHOR || "", "blog", ...categories]}
       />
       <main className="py-10">
         <div className="container mx-auto space-y-6">
