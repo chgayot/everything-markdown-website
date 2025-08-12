@@ -16,6 +16,8 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: everything-markdown-blog
+    env_file:
+      - .env
     restart: unless-stopped
     networks:
       - traefik # Must connect to Traefik's network

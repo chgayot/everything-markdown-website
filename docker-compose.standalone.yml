@@ -13,6 +13,8 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: everything-markdown-blog
+    env_file:
+      - .env
     ports:
       - "8080:80" # Maps host port 8080 to container port 80
     restart: unless-stopped
