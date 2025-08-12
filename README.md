@@ -123,7 +123,7 @@ Syntax highlighting is supported for various languages.
 function greet(name: string): string {
   return `Hello, ${name}!`;
 }
-```
+
 
 ## Mermaid Diagrams
 
@@ -136,7 +136,7 @@ graph TD;
     B-->D;
     C-->D;
 ```
-```
+
 
 ## Publishing Your Site
 
@@ -191,7 +191,7 @@ This setup is for users who run Traefik as a reverse proxy.
     Ensure your Traefik stack is running and connected to the `traefik` external network. Then, deploy the blog service:
 
     ```bash
-    docker-compose -f docker-compose.traefik.yml up -d
+    docker compose -f docker-compose.traefik.yml up -d
     ```
 
     Traefik will automatically detect the service, handle routing, and provision an SSL certificate.
@@ -206,10 +206,10 @@ When you add a new article, you need to rebuild the Docker image to include the 
 
     ```bash
     # For standalone
-    docker-compose -f docker-compose.standalone.yml up -d --build
+    docker compose -f docker-compose.standalone.yml up -d --build
 
     # For Traefik
-    docker-compose -f docker-compose.traefik.yml up -d --build
+    docker compose -f docker-compose.traefik.yml up -d --build
     ```
 
     The `--build` flag tells Docker Compose to rebuild the image before starting the container.
