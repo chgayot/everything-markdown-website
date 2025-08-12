@@ -61,44 +61,68 @@ const contentModules = import.meta.glob("/src/content/blog/**/*.md", {
   eager: false,
 });
 
-const postSummaries: BlogPostSummary[] = Object.entries(frontmatterModules)
-  .filter(([path]) => !/\/_template\.md$/.test(path))
-  .map(([path, raw]) => {
-    const parsed = fm<Partial<BlogFrontmatter>>(String(raw));
-    const attrs = parsed.attributes || {};
-    if (attrs.draft) return null;
+// Create a map from file path to post summary. This allows us to associate
+// slugs with their original file paths, fixing the issue where slugs defined
+// in frontmatter would not resolve to the correct file.
+const pathToSummaryMap = new Map<string, BlogPostSummary>();
 
-    const slug = deriveSlug(path, attrs.slug);
-    const url = `/blog/${slug}`;
-    const keywords = normalizeKeywords(attrs.keywords || []);
+for (const [path, raw] of Object.entries(frontmatterModules)) {
+  if (/\/_template\.md$/.test(path)) continue;
 
-    return {
-      slug,
-      url,
-      title: attrs.title || slug,
-      description: attrs.description || "",
-      date: attrs.date || new Date().toISOString(),
-      category: capitalize(attrs.category || "general"),
-      keywords,
-      coverImage: attrs.coverImage,
-      coverAlt: attrs.coverAlt,
-    };
-  })
-  .filter(Boolean)
-  .sort((a, b) => (a!.date < b!.date ? 1 : -1)) as BlogPostSummary[];
+  const parsed = fm<Partial<BlogFrontmatter>>(String(raw));
+  const attrs = parsed.attributes || {};
+  if (attrs.draft) continue;
+
+  const slug = deriveSlug(path, attrs.slug);
+  const url = `/blog/${slug}`;
+  const keywords = normalizeKeywords(attrs.keywords || []);
+
+  const summary: BlogPostSummary = {
+    slug,
+    url,
+    title: attrs.title || slug,
+    description: attrs.description || "",
+    date: attrs.date || new Date().toISOString(),
+    category: capitalize(attrs.category || "general"),
+    keywords,
+    coverImage: attrs.coverImage,
+    coverAlt: attrs.coverAlt,
+  };
+  pathToSummaryMap.set(path, summary);
+}
+
+const postSummaries: BlogPostSummary[] = Array.from(pathToSummaryMap.values())
+  .sort((a, b) => (a.date < b.date ? 1 : -1));
+
+// Create a reverse map from slug to path for efficient lookups in getPostWithContent.
+const slugToPathMap = new Map<string, string>();
+for (const [path, summary] of pathToSummaryMap.entries()) {
+  slugToPathMap.set(summary.slug, path);
+}
 
 export async function getPostWithContent(slug: string): Promise<BlogPost | null> {
-  const path = `/src/content/blog/${slug}.md`;
+  const path = slugToPathMap.get(slug);
+  if (!path) {
+    console.error(`[Blog] Post with slug "${slug}" not found.`);
+    return null;
+  }
+
   const loader = contentModules[path];
-  if (!loader) return null;
+  if (!loader) {
+    console.error(`[Blog] Content module not found for path: ${path}`);
+    return null;
+  }
 
   const raw = await loader();
   const parsed = fm<Partial<BlogFrontmatter>>(String(raw));
-  const attrs = parsed.attributes || {};
   const content = parsed.body || "";
 
   const summary = getPostBySlug(slug);
-  if (!summary) return null; // Should not happen if loader exists
+  if (!summary) {
+    // This should not happen if the maps are built correctly
+    console.error(`[Blog] Summary not found for slug "${slug}", this is unexpected.`);
+    return null;
+  }
 
   return {
     ...summary,

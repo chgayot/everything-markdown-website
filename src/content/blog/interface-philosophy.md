@@ -1,6 +1,6 @@
 ---
 title: "On the Philosophy of Interfaces"
-slug: "interface-philosophy"
+slug: "interface-philosophy-its-important"
 description: "Exploring interfaces as contracts, boundaries, and abstractions - the philosophical underpinnings of modular design."
 date: "2025-07-30"
 category: "design"
