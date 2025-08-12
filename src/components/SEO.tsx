@@ -34,7 +34,8 @@ const setProperty = (property: string, content: string) => {
 
 export const SEO = ({ title, description, canonical, type = "website", image, keywords = [], jsonLd }: SEOProps) => {
   useEffect(() => {
-    document.title = title.length > 60 ? `${title.slice(0, 57)}...` : title;
+    const pageTitle = title || "";
+    document.title = pageTitle.length > 60 ? `${pageTitle.slice(0, 57)}...` : pageTitle;
 
     if (description) setMeta("description", description.slice(0, 160));
     if (keywords.length) setMeta("keywords", keywords.join(", "));
@@ -72,7 +73,7 @@ export const SEO = ({ title, description, canonical, type = "website", image, ke
       script.text = JSON.stringify(jsonLd);
       document.head.appendChild(script);
     }
-  }, [title, description, canonical, type, image, JSON.stringify(jsonLd)]);
+  }, [title, description, canonical, type, image, keywords, JSON.stringify(jsonLd)]);
 
   return null;
 };
