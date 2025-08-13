@@ -21,9 +21,7 @@ coverAlt: "Accessible description for the cover image"
 draft: false
 ---
 
-# Heading 1 (auto-rendered as Article H1)
-
-Intro paragraph.
+Intro paragraph after description.
 
 ## Heading 2
 
