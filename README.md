@@ -214,6 +214,18 @@ When you add a new article, you need to rebuild the Docker image to include the 
 
     The `--build` flag tells Docker Compose to rebuild the image before starting the container.
 
+## Example Workflow
+
+Here’s how you can use an AI assistant to generate a draft for a new article.
+
+1.  **Connect to your server** using a tool like Visual Studio Code's Remote-SSH extension. Or locally, then use Github Actions when pushing.
+2.  **Open your AI assistant** (e.g., GitHub Copilot).
+3.  **Use the following prompt**, referencing the template file to guide the AI:
+
+    > "Using the file `src/content/blog/_template.md` as a template, write an article about {Would life in Antartica be cooler if it was warmer there?}. Clean up the placeholder content, adopt {deeply out-of-place and absurb, avoiding the bullsh*t LLM usually outputs} tone, and fill in all the SEO metadata fields. Follow this structure:"
+
+4.  **Review and refine** the generated article. Check for accuracy, clarity, and style. Make sure the frontmatter is correct and the content aligns with your blog's focus.
+
 ## Contributing
 
 Contributions are welcome! If you have a suggestion that would make this project better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
