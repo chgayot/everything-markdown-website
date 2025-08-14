@@ -46,15 +46,27 @@ export default function Index() {
           <div className="container mx-auto">
             <header className="mb-8 sm:mb-10 text-center">
               <h1 className="font-codex text-4xl sm:text-6xl font-bold text-primary mb-4 transform -rotate-1">
-                Everything    Markdown
+                Charles Henri Gayot
               </h1>
-              <h2 className="font-codex text-xl sm:text-2xl text-muted-foreground italic">
-                ~ A Website ~
-              </h2>
               <p className="font-codex text-muted-foreground mt-4 max-w-2xl mx-auto leading-relaxed">
-                A quick description
+                A codex - engineering notes, discoveries, observations, opinions and experiments.
               </p>
             </header>
+
+            <div className="text-center mb-8">
+              <h2 className="font-codex text-3xl font-bold text-primary mb-2 transform -rotate-1">About</h2>
+              <div className="w-24 h-0.5 bg-primary/30 mx-auto"></div>
+            </div>
+            <div className="max-w-3xl mx-auto text-center mb-12">
+              <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
+                Multidisciplinary Engineer at heart - passionate about hardware and software. Firm believer that the world does not need more software - it needs more hardware, but building it should be as easy and fast as software. Serial entrepreneur - having raised 750k€ so far.
+              </p>
+            </div>
+
+            <div className="text-center mb-8">
+              <h2 className="font-codex text-3xl font-bold text-primary mb-2 transform rotate-1">Projects</h2>
+              <div className="w-24 h-0.5 bg-primary/30 mx-auto"></div>
+            </div>
             <Suspense fallback={<div className="h-48 flex items-center justify-center">
               <div className="animate-pulse text-muted-foreground">Loading projects...</div>
             </div>}>
@@ -89,17 +101,26 @@ export default function Index() {
           <div className="container mx-auto">
             <div className="text-center">
               <h2 className="font-codex text-2xl font-bold text-primary mb-6 transform -rotate-1">Contact Me</h2>
-              <div className="inline-flex items-center gap-3 bg-card/70 backdrop-blur border border-border/60 rounded-lg px-6 py-4 hover:shadow-lg transition-shadow">
-                <div className="size-10 rounded-full bg-gradient-to-br from-primary/80 to-accent/70 shadow-md grid place-items-center text-primary-foreground font-semibold">
-                  in
-                </div>
-                <a 
+              <div className="flex flex-wrap justify-center gap-4">
+                <a
                   href="https://linkedin.com/in/gayot/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors"
+                  className="inline-flex items-center gap-3 bg-card/70 backdrop-blur border border-border/60 rounded-lg px-6 py-4 hover:shadow-lg transition-shadow text-muted-foreground hover:text-primary"
                 >
-                  Connect on LinkedIn
+                  <div className="size-10 rounded-full bg-gradient-to-br from-primary/80 to-accent/70 shadow-md grid place-items-center text-primary-foreground font-semibold">
+                    in
+                  </div>
+                  <span>Connect on LinkedIn</span>
+                </a>
+                <a
+                  href="mailto:charles@stepupsolutions.dk"
+                  className="inline-flex items-center gap-3 bg-card/70 backdrop-blur border border-border/60 rounded-lg px-6 py-4 hover:shadow-lg transition-shadow text-muted-foreground hover:text-primary"
+                >
+                  <div className="size-10 rounded-full bg-gradient-to-br from-primary/80 to-accent/70 shadow-md grid place-items-center text-primary-foreground font-semibold">
+                    @
+                  </div>
+                  <span>Email Me</span>
                 </a>
               </div>
             </div>
