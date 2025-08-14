@@ -55,10 +55,13 @@ export default function Index() {
           <div className="container mx-auto">
             <header className="mb-8 sm:mb-10 text-center">
               <h1 className="font-codex text-4xl sm:text-6xl font-bold text-primary mb-4 transform -rotate-1">
-                Charles Henri Gayot
+                Everything    Markdown
               </h1>
+              <h2 className="font-codex text-xl sm:text-2xl text-muted-foreground italic">
+                ~ Lorem Ipsum ~
+              </h2>
               <p className="font-codex text-muted-foreground mt-4 max-w-2xl mx-auto leading-relaxed">
-                A codex - engineering notes, discoveries, observations, opinions and experiments.
+                A quick description
               </p>
             </header>
 
@@ -68,7 +71,7 @@ export default function Index() {
             </div>
             <div className="max-w-3xl mx-auto text-center mb-12">
               <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
-                Multidisciplinary Engineer at heart - passionate about hardware and software. Firm believer that the world does not need more software - it needs more hardware, but building it should be as easy and fast as software. Serial entrepreneur - having raised 750k€ so far.
+                This is a website where content of the article is in Markdown.
               </p>
             </div>
 
