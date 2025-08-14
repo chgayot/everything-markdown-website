@@ -63,6 +63,7 @@ export function ProjectsCarousel({ projects = sampleProjects }: { projects?: Pro
     return () => clearInterval(id);
   }, [emblaApi, scrollNext]);
 
+
   return (
     <div className="w-full max-w-4xl mx-auto">
       <div className="embla overflow-hidden" ref={emblaRef}>
@@ -76,7 +77,10 @@ export function ProjectsCarousel({ projects = sampleProjects }: { projects?: Pro
                       {p.logo || <LogoBadge label={p.name} />}
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{p.description}</p>
+                  <div>
+                    <h3 className="font-semibold text-lg">{p.name}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{p.description}</p>
+                  </div>
                 </CardContent>
               </Card>
             </div>
