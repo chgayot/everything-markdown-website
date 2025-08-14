@@ -6,7 +6,7 @@ import {
   getPostsByCategory,
   searchPosts,
 } from "@/lib/blog";
-import { useMemo, useState, lazy, Suspense } from "react";
+import { useMemo, useState, lazy, Suspense, useEffect } from "react";
 import CategoryFilter from "@/components/CategoryFilter";
 import BlogList from "@/components/BlogList";
 import { SearchBar } from "@/components/SearchBar";
@@ -19,12 +19,21 @@ const site = import.meta.env.VITE_SITE_URL;
 export default function Index() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const posts = getAllPosts();
-  const categories = getAllCategories();
+  const [posts, setPosts] = useState<Awaited<ReturnType<typeof getAllPosts>>>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    getAllPosts().then(loadedPosts => {
+      setPosts(loadedPosts);
+      const loadedCategories = Array.from(new Set(loadedPosts.map(p => p.category))).sort();
+      setCategories(loadedCategories);
+    });
+  }, []);
+
   const filtered = useMemo(() => {
-    const byCategory = getPostsByCategory(activeCategory);
+    const byCategory = posts.filter(p => activeCategory === 'all' || p.category.toLowerCase() === activeCategory.toLowerCase());
     return searchPosts(byCategory, searchQuery);
-  }, [activeCategory, searchQuery]);
+  }, [activeCategory, searchQuery, posts]);
 
   return (
     <>

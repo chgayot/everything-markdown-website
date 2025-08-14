@@ -49,58 +49,59 @@ function capitalize(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-// Eagerly import all markdown files' frontmatter at build time
-const frontmatterModules = import.meta.glob("/src/content/blog/**/*.md", {
-  as: "raw",
-  eager: true,
+// Use a single dynamic import for all markdown files
+const contentModules = import.meta.glob('/src/content/blog/**/*.md', {
+  query: '?raw',
+  import: 'default',
 });
 
-// Lazily import the raw content for dynamic loading
-const contentModules = import.meta.glob("/src/content/blog/**/*.md", {
-  as: "raw",
-  eager: false,
-});
-
-// Create a map from file path to post summary. This allows us to associate
-// slugs with their original file paths, fixing the issue where slugs defined
-// in frontmatter would not resolve to the correct file.
-const pathToSummaryMap = new Map<string, BlogPostSummary>();
-
-for (const [path, raw] of Object.entries(frontmatterModules)) {
-  if (/\/_template\.md$/.test(path)) continue;
-
-  const parsed = fm<Partial<BlogFrontmatter>>(String(raw));
-  const attrs = parsed.attributes || {};
-  if (attrs.draft) continue;
-
-  const slug = deriveSlug(path, attrs.slug);
-  const url = `/blog/${slug}`;
-  const keywords = normalizeKeywords(attrs.keywords || []);
-
-  const summary: BlogPostSummary = {
-    slug,
-    url,
-    title: attrs.title || slug,
-    description: attrs.description || "",
-    date: attrs.date || new Date().toISOString(),
-    category: capitalize(attrs.category || "general"),
-    keywords,
-    coverImage: attrs.coverImage,
-    coverAlt: attrs.coverAlt,
-  };
-  pathToSummaryMap.set(path, summary);
-}
-
-const postSummaries: BlogPostSummary[] = Array.from(pathToSummaryMap.values())
-  .sort((a, b) => (a.date < b.date ? 1 : -1));
-
-// Create a reverse map from slug to path for efficient lookups in getPostWithContent.
+let postSummaries: BlogPostSummary[] = [];
 const slugToPathMap = new Map<string, string>();
-for (const [path, summary] of pathToSummaryMap.entries()) {
-  slugToPathMap.set(summary.slug, path);
+
+async function initializePosts(): Promise<BlogPostSummary[]> {
+  if (postSummaries.length > 0) {
+    return postSummaries;
+  }
+
+  const pathToSummaryMap = new Map<string, BlogPostSummary>();
+
+  for (const path in contentModules) {
+    if (/\/_template\.md$/.test(path)) continue;
+
+    const raw = await contentModules[path]();
+    const parsed = fm<Partial<BlogFrontmatter>>(String(raw));
+    const attrs = parsed.attributes || {};
+    if (attrs.draft) continue;
+
+    const slug = deriveSlug(path, attrs.slug);
+    const url = `/blog/${slug}`;
+    const keywords = normalizeKeywords(attrs.keywords || []);
+
+    const summary: BlogPostSummary = {
+      slug,
+      url,
+      title: attrs.title || slug,
+      description: attrs.description || '',
+      date: attrs.date || new Date().toISOString(),
+      category: capitalize(attrs.category || 'general'),
+      keywords,
+      coverImage: attrs.coverImage,
+      coverAlt: attrs.coverAlt,
+    };
+    pathToSummaryMap.set(path, summary);
+    slugToPathMap.set(slug, path);
+  }
+
+  postSummaries = Array.from(pathToSummaryMap.values())
+    .sort((a, b) => (a.date < b.date ? 1 : -1));
+
+  return postSummaries;
 }
 
 export async function getPostWithContent(slug: string): Promise<BlogPost | null> {
+  if (postSummaries.length === 0) {
+    await initializePosts();
+  }
   const path = slugToPathMap.get(slug);
   if (!path) {
     console.error(`[Blog] Post with slug "${slug}" not found.`);
@@ -119,7 +120,6 @@ export async function getPostWithContent(slug: string): Promise<BlogPost | null>
 
   const summary = getPostBySlug(slug);
   if (!summary) {
-    // This should not happen if the maps are built correctly
     console.error(`[Blog] Summary not found for slug "${slug}", this is unexpected.`);
     return null;
   }
@@ -130,8 +130,8 @@ export async function getPostWithContent(slug: string): Promise<BlogPost | null>
   };
 }
 
-export function getAllPosts(): BlogPostSummary[] {
-  return postSummaries;
+export async function getAllPosts(): Promise<BlogPostSummary[]> {
+  return initializePosts();
 }
 
 export function getPostBySlug(slug: string): BlogPostSummary | undefined {
